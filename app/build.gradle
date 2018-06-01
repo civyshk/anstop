@@ -5,9 +5,9 @@ android {
     buildToolsVersion "27.0.3"
 
     defaultConfig {
-        applicationId "An.stop"
+        applicationId "net.project104.anstop"
         minSdkVersion 11
-        targetSdkVersion 27
+        targetSdkVersion 14
         compileOptions {
             sourceCompatibility JavaVersion.VERSION_1_5
             targetCompatibility JavaVersion.VERSION_1_5

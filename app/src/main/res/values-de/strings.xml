@@ -17,7 +17,7 @@
     <string name="countdown">Countdown</string>
     <string name="countdown_please_set_hms">Bitte wählen Sie die Stunden, Minuten und Sekunden.</string>
     <string name="countdown_completed_please_refresh">Der Countdown ist beendet.\nBitte drücken Sie auf Start, um ihn erneut zu starten.</string>
-    <string name="about_dialog">Anstop v1.6, Eine kleine Anwendung zum Stoppen der Zeit.\nCopyright (C) 2009-2012,2014-2015 MJ und Jeremy Monin \n\nFür Quellcode, besuchen Sie https://github.com/jdmonin/anstop</string>
+    <string name="about_dialog">Anstop v1.7, Eine kleine Anwendung zum Stoppen der Zeit.\nCopyright (C) 2009-2012,2014-2015,2018 MJ, Jeremy Monin und Yeshe S G\n\nFür Quellcode, besuchen Sie https://github.com/civyshk/anstop</string>
     <string name="save">Speichern</string>
     <string name="load">Laden</string>
     <string name="debug_log">Debugprotokoll</string>
@@ -26,10 +26,10 @@
     <string name="save_dialog">Bitte geben sie einen Namen an um die Zeit zu speichern</string>
     <string name="no_entry">Keine Einträge!</string>
     <string name="delete">Löschen</string>
-    <string name="export">Exportieren ...</string>
+    <string name="export">Exportieren…</string>
     <string name="export_succes">Speichern auf der SD Karte war erfolgreich!</string>
     <string name="export_fail">Exportieren fehlgeschlagen!</string>
-    <string name="export_all">Alle exportieren ...</string>
+    <string name="export_all">Alle exportieren…</string>
     <string name="mode_was">Modus war:</string>
     <string name="start_time">Startzeit war: </string>
     <string name="started_at">Begann um:</string>
@@ -41,7 +41,7 @@
     <string name="vibrate_after_countdown">Vibrieren am Ende der Countdown</string>
     <string name="vibrate_after_countdown_checkbox">Vibrieren (2 Impulsen) wenn der Countdown 00:00 erreicht</string>
     <string name="motion_sensor">Beschleunigungssensor</string>
-    <string name="send">Senden...</string>
+    <string name="send">Senden…</string>
     <string name="startup_mode">Modus beim Start</string>
     <string name="hours">Stunden:</string>
     <string name="minutes">Minuten:</string>

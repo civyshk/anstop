@@ -18,7 +18,7 @@
 <string name="countdown">Countdown</string>
 <string name="countdown_please_set_hms">Please select the hours, minutes, and seconds to count down.</string>
 <string name="countdown_completed_please_refresh">The countdown to 0 has completed.\nPlease hit Refresh to start again.</string>
-<string name="about_dialog">Anstop v1.6, a small application to stop and countdown time.\nCopyright (C) 2009-2012,2014-2015 MJ and Jeremy Monin\n\nLicense is GPLv2 (http://www.gnu.org/licenses/gpl-2.0.html)\nFor source code see https://github.com/jdmonin/anstop</string>
+<string name="about_dialog">Anstop v1.7, a small application to stop and countdown time.\nCopyright (C) 2009-2012,2014-2015,2018 MJ, Jeremy Monin and Yeshe S G\n\nLicense is GPLv2 (http://www.gnu.org/licenses/gpl-2.0.html)\nFor source code see https://github.com/civyshk/anstop</string>
 
 <string name="save">Save</string>
 <string name="load">Load</string>
@@ -28,10 +28,10 @@
 <string name="save_dialog">Please enter a name to save the results</string>
 <string name="no_entry">No Entries!</string>
 <string name="delete">Delete</string>
-<string name="export">Export ...</string>
-<string name="export_succes">Saved sucessfully on SD Card!</string>
+<string name="export">Export…</string>
+<string name="export_succes">Saved successfully on SD Card!</string>
 <string name="export_fail">Exporting failed!</string>
-<string name="export_all">Export all ...</string>
+<string name="export_all">Export all…</string>
 <string name="mode_was">Mode was: </string>
 <string name="start_time">Start Time was:</string>
 <string name="started_at">Started at:</string>
@@ -43,7 +43,7 @@
 <string name="vibrate_after_countdown">Vibrate after Countdown</string>
 <string name="vibrate_after_countdown_checkbox">Vibrate (2 pulses) when countdown reaches 00:00</string>
 <string name="motion_sensor">Motion Sensor</string>
-<string name="send">Send...</string>
+<string name="send">Send…</string>
 <string name="startup_mode">Mode at Startup</string>
 <string name="hours">Hours:</string>
 <string name="minutes">Minutes:</string>

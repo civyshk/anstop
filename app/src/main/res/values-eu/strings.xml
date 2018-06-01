@@ -19,7 +19,7 @@
 <string name="countdown">Atzerako kontaketa</string>
 <string name="countdown_please_set_hms">Mesedez hautatu orduak, minutuak eta segundoak atzerako kontaketarako.</string>
 <string name="countdown_completed_please_refresh">Atzerako kontaketa zeroraino iritsi da.\nMesedez sakatu Freskatu berriz hasteko.</string>
-<string name="about_dialog">Anstop v1.6, kronometro eta atzerako kontaketa aplikazio txikia.\nCopyright-a (C) 2009-2012,2014-2015 MJ eta Jeremy Monin\n\nLizentzia GPLv2 da (http://www.gnu.org/licenses/gpl-2.0.html)\nIturburu-kodea eskuratzeko bisitatu https://github.com/jdmonin/anstop</string>
+<string name="about_dialog">Anstop v1.7, kronometro eta atzerako kontaketa aplikazio txikia.\nCopyright-a (C) 2009-2012,2014-2015,2018 MJ, Jeremy Monin eta Yeshe S G\n\nLizentzia GPLv2 da (http://www.gnu.org/licenses/gpl-2.0.html)\nIturburu-kodea eskuratzeko bisitatu https://github.com/civyshk/anstop</string>
 
 <string name="save">Gorde</string>
 <string name="load">Kargatu</string>
@@ -29,10 +29,10 @@
 <string name="save_dialog">Mesedez sartu izen bat emaitzak gordetzeko</string>
 <string name="no_entry">Sarrerarik ez!</string>
 <string name="delete">Ezabatu</string>
-<string name="export">Esportatu ...</string>
+<string name="export">Esportatu…</string>
 <string name="export_succes">Behar bezala gorde da SD txartelean!</string>
 <string name="export_fail">Esportatzeak huts egin du!</string>
-<string name="export_all">Esportatu guztiak ...</string>
+<string name="export_all">Esportatu guztiak…</string>
 <string name="mode_was">Modua hau zen: </string>
 <string name="start_time">Hasierako ordua hau zen:</string>
 <string name="started_at">Hasierako ordua:</string>
@@ -44,7 +44,7 @@
 <string name="vibrate_after_countdown">Bibratu atzerako amaitu denean</string>
 <string name="vibrate_after_countdown_checkbox">Bibratu (2 pultsuak) atzerako kontaketa iristen 00:00 denean</string>
 <string name="motion_sensor">Mugimendu-sentsorea</string>
-<string name="send">Bidali...</string>
+<string name="send">Bidali…</string>
 <string name="startup_mode">Modua abiaraztean</string>
 <string name="hours">Orduak:</string>
 <string name="minutes">Minutuak:</string>
