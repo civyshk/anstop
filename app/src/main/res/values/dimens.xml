@@ -7,6 +7,6 @@
     <dimen name="clock_font_size">60sp</dimen>
     <dimen name="clock_font_size_small">50sp</dimen>
     <dimen name="clock_font_size_tiny">30sp</dimen>
-    <dimen name="info_font_size">18sp</dimen>
-    <dimen name="lap_font_size">16sp</dimen>
+    <dimen name="info_font_size">22sp</dimen>
+    <dimen name="lap_font_size">18sp</dimen>
 </resources>

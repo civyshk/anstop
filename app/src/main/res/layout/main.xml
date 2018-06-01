@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/stopwatchLayout"
 	android:layout_width="fill_parent"
@@ -94,7 +94,7 @@
 			</LinearLayout>
 		</RelativeLayout>
 
-		<!-- 3 buttons together fill activity width; height also increased -->
+		<!--  -->
 		<LinearLayout
 			android:id="@+id/LinearLayout01"
 			android:layout_width="match_parent"
@@ -143,4 +143,4 @@
 			android:text="@string/reset" />
 
 	</LinearLayout>
-</LinearLayout>
+</FrameLayout>

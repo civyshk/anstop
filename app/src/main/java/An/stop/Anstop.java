@@ -515,7 +515,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 
         startTimeView = (TextView) findViewById(R.id.startTimeView);;
         lapView = (TextView) findViewById(R.id.lapView);
-        setupCommentLongPress(lapView);
+		setupCommentLongPress(startTimeView);
         wroteStartTime = false;
 
         lapButton = (Button) findViewById(R.id.lapButton);
@@ -1342,7 +1342,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 		if ((comment != null) && (comment.length() > 0))
 		{
 			if (sb.length() > 0)
-				sb.append("\n\n");
+				sb.append("\n");
 			sb.append(comment);
 		}
 
