@@ -4,6 +4,7 @@
 
  This file Copyright (C) 2009-2012 by mj (fakeacc.mj@gmail.com)
  Portions of this file Copyright (C) 2012,2015 Jeremy D Monin (jdmonin@nand.net)
+ Portions of this file Copyright (C) 2018 Yeshe S G (civyshk@gmail.com)
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -19,9 +20,9 @@
  along with this program.  If not, see http://www.gnu.org/licenses/ .
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="An.stop"
-    android:versionCode="11"
-    android:versionName="1.6" >
+    package="net.project104.anstop"
+    android:versionCode="15"
+    android:versionName="1.7" >
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -33,7 +34,7 @@
         android:icon="@mipmap/icon"
         android:label="@string/app_name" >
         <activity
-            android:name=".Anstop"
+            android:name="net.project104.anstop.Anstop"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,12 +43,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="SettingsActivity"
+            android:name="net.project104.anstop.SettingsActivity"
             android:launchMode="standard" >
         </activity>
-        <activity android:name="LoadActivity" >
+        <activity android:name="net.project104.anstop.LoadActivity" >
         </activity>
-        <activity android:name="ShowTimesActivity" >
+        <activity android:name="net.project104.anstop.ShowTimesActivity" >
         </activity>
     </application>
 
