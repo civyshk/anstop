@@ -180,7 +180,7 @@ public class Clock {
 	 * Elapsed time (milliseconds) of each lap, if lap mode.
 	 * Read-only outside this class, please.
 	 * The highest occupied index is ({@link #laps} - 2).
-	 * If this array is about to be filled, {@link #lap(StringBuffer)} will extend it.
+	 * If this array is about to be filled, {@link #lap(StringBuilder)} will extend it.
 	 *<P>
 	 * Not persisted in {@link #fillSaveState(Bundle)} or {@link #fillSaveState(SharedPreferences)}.
 	 * Instead, current laps must be stored in the database.
@@ -193,7 +193,7 @@ public class Clock {
 	 * from {@link System#currentTimeMillis()}.
 	 * Read-only outside this class, please.
 	 * The highest occupied index is ({@link #laps} - 2).
-	 * If this array is about to be filled, {@link #lap(StringBuffer)} will extend it.
+	 * If this array is about to be filled, {@link #lap(StringBuilder)} will extend it.
 	 *<P>
 	 * Not persisted in {@link #fillSaveState(Bundle)} or {@link #fillSaveState(SharedPreferences)}.
 	 * Instead, current laps must be stored in the database.
@@ -262,7 +262,7 @@ public class Clock {
 	
 	/**
 	 * Save the clock's current state to a bundle.
-	 * For use with {@link Activity#onSaveInstanceState(Bundle)}.
+	 * For use with {@link Anstop#onSaveInstanceState(Bundle)}.
 	 *<UL>
 	 * <LI> clockActive  1 or 0
 	 * <LI> clockWasActive  1 or 0
@@ -750,7 +750,7 @@ public class Clock {
 	 * Get the current value of this timer.
 	 * @return a stringbuffer of the form "#h mm:ss:d"
 	 * @since 1.3
-	 * @see #getCurrentValueMillis()
+	 * @see #getCurrentValueMillis(StringBuilder, boolean)
 	 */
 	public StringBuffer getCurrentValue()
 	{
@@ -772,8 +772,8 @@ public class Clock {
 	 * Get the current value of this timer, in milliseconds.
 	 * @param sb  Optional StringBuffer, or null;
 	 *    current value in the format "#h mm:ss:d" will be appended to sb
-	 *    depending on {@link #lapFormatFlags}.
-	 *    if {@link #lapFormatFlags} includes {@link #LAP_FMT_FLAG_DELTA},
+	 *    depending on {@link LapFormatter#lapFormatFlags}.
+	 *    if {@link LapFormatter#lapFormatFlags} includes {@link #LAP_FMT_FLAG_DELTA},
 	 *    and {@link #laps} &gt; 1, then {@link #lap_elapsed}[{@link #laps} - 2]
 	 *    must be accurate to calculate the delta.
 	 * @param withLap  If true, sb will have the lap number too;
@@ -905,7 +905,7 @@ public class Clock {
 	 *
 	 * @param sb  Null or a buffer to which the lap info
 	 *    will be appended, in the format "lap. #h mm:ss:d"
-	 *    depending on {@link #lapFormatFlags}.
+	 *    depending on {@link LapFormatter#lapFormatFlags}.
 	 * @return the lap number; the first lap number is 1.
 	 * @since 1.5
 	 */
@@ -1325,7 +1325,7 @@ public class Clock {
 		public int lapFormatFlags = LAP_FMT_FLAG_ELAPSED;
 
 		/**
-		 * Time-of-day format used in {@link Clock#getCurrentValueMillis(StringBuffer, boolean)}
+		 * Time-of-day format used in {@link Clock#getCurrentValueMillis(StringBuilder, boolean)}
 		 * for lap format, when {@link Clock#LAP_FMT_FLAG_SYSTIME} is used.
 		 *<P>
 		 * This is null initially; {@link Clock#LAP_FMT_FLAG_ELAPSED} doesn't need it.

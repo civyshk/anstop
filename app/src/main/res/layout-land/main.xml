@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Main Anstop layout, landscape mode. Hour and mm:ss:d time on same line. -->
-<!-- Left column (45% of width) is hh:mm:ss:d and buttons, right (55%) is laps textview. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/stopwatchLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingBottom="@dimen/screen_padding"
+            android:paddingBottom="@dimen/screen_padding_bottom"
             android:paddingLeft="@dimen/screen_padding"
             android:paddingRight="@dimen/screen_padding"
             android:paddingTop="0dp">
@@ -18,85 +16,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- hh hours mm:ss:d -->
-        <LinearLayout
-            android:id="@+id/LinearLayout02"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <!-- spacer -->
-            <View
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/hourView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textSize="@dimen/clock_font_size_tiny" />
-
-            <TextView
-                android:id="@+id/hourLabelView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/hour"
-                android:textSize="@dimen/clock_font_size_tiny" />
-            <!-- spacer; 3sp is scaled with user's text preferences -->
-            <TextView
-                android:layout_width="3sp"
-                android:layout_height="wrap_content"
-                android:text="" />
-
-            <TextView
-                android:id="@+id/minView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00"
-                android:textSize="@dimen/clock_font_size" />
-
-            <TextView
-                android:id="@+id/sepView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:textSize="@dimen/clock_font_size_small" />
-
-            <TextView
-                android:id="@+id/secondsView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00"
-                android:textSize="@dimen/clock_font_size" />
-
-            <TextView
-                android:id="@+id/sepView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":"
-                android:textSize="@dimen/clock_font_size_small" />
-
-            <TextView
-                android:id="@+id/dsecondsView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textSize="@dimen/clock_font_size" />
-
-            <!-- spacer -->
-            <View
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
-            <!--  -->
             <LinearLayout
                 android:id="@+id/LinearLayout01"
                 android:layout_width="0dp"
@@ -107,8 +32,7 @@
                 <Button
                     android:id="@+id/startButton"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="4"
+                    android:layout_height="@dimen/button_big_height"
                     android:text="@string/start_stop" />
 
                 <TextView
@@ -118,13 +42,6 @@
                     android:layout_weight="3"
                     android:textSize="@dimen/info_font_size" />
 
-                <Button
-                    android:id="@+id/resetButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:text="@string/reset" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -132,6 +49,11 @@
                 android:layout_height="match_parent"
                 android:layout_weight="4"
                 android:orientation="vertical">
+
+                <include
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    layout="@layout/layout_time"/>
 
                 <!-- laps to right of buttons -->
                 <ScrollView
@@ -147,17 +69,30 @@
                         android:text="@string/laps" />
                 </ScrollView>
 
-                <Button
-                    android:id="@+id/lapButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"
-                    android:text="@string/lap" />
-
             </LinearLayout>
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/resetButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:text="@string/reset" />
+
+            <Button
+                android:id="@+id/lapButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="@string/lap" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>

@@ -23,28 +23,12 @@
             android:layout_height="wrap_content"
             layout="@layout/layout_time"/>
 
-        <LinearLayout
+        <Button
+            android:id="@+id/startButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/startButton"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/button_big_height"
-                android:layout_weight="2"
-                android:text="@string/start_stop"
-                android:textSize="@dimen/button_font_size" />
-
-            <Button
-                android:id="@+id/refreshButton"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/button_big_height"
-                android:layout_weight="2"
-                android:text="@string/refresh"
-                android:textSize="@dimen/button_font_size" />
-
-        </LinearLayout>
+            android:layout_height="@dimen/button_big_height"
+            android:text="@string/start_stop"
+            android:textSize="@dimen/button_font_size" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -133,6 +117,14 @@
                 android:textSize="@dimen/info_font_size" />
 
         </ScrollView>
+
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_med_height"
+            android:layout_weight="0"
+            android:text="@string/refresh"
+            android:textSize="@dimen/button_font_size" />
 
     </LinearLayout>
 

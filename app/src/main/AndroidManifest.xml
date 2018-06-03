@@ -21,7 +21,7 @@
  -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.project104.anstop"
-    android:versionCode="15"
+    android:versionCode="16"
     android:versionName="1.7" >
 
     <uses-permission android:name="android.permission.VIBRATE" />

@@ -80,7 +80,6 @@ import android.widget.LinearLayout.LayoutParams;
  */
 public class Anstop extends Activity implements OnGesturePerformedListener {
 
-
 	/**
 	 * If true, show Debug Log in menu; see {@link #addDebugLog(CharSequence)}.
 	 * The log is meant to be viewed on the device as Anstop runs, without connecting to a computer.
@@ -105,8 +104,6 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 	private static final int DEBUG_LOG_DIALOG = 3;
 	
 	private static final int SETTINGS_ACTIVITY = 0;
-	
-//	private static final int VIEW_SIZE = 60;
 
 	// Reminder: If you add or change fields, be sure to update
 	// Clock.fillSaveState and Clock.restoreFromSaveStateFields
@@ -264,7 +261,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
         	SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
         	onRestoreInstanceState(settings);
         }
-	addDebugLog("onCreate: after onRestore, mode==" + clock.getMode() + ", isStarted==" + clock.isStarted);
+		addDebugLog("onCreate: after onRestore, mode==" + clock.getMode() + ", isStarted==" + clock.isStarted);
         
         gestureLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
         gestureLibrary.load();
@@ -466,7 +463,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 
         secSpinner.setMaxValue(59);
         minSpinner.setMaxValue(59);
-        hourSpinner.setMaxValue(24*365);
+        hourSpinner.setMaxValue(24*365-1);
 
         //set onlicklisteners
         startButton = (Button) findViewById(R.id.startButton);
@@ -475,7 +472,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
         refreshButton  = (Button) findViewById(R.id.refreshButton);
         refreshButton.setOnClickListener(new refreshButtonListener());
 
-	updateHourVisibility();
+		updateHourVisibility();
 
         // inform clock class to count down now
         clock.changeMode(COUNTDOWN);
@@ -512,7 +509,6 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
         minView = (TextView) findViewById(R.id.minView);
         hourView = (TextView) findViewById(R.id.hourView);
         hourLabelView = (TextView) findViewById(R.id.hourLabelView);
-
         startTimeView = (TextView) findViewById(R.id.startTimeView);;
         lapView = (TextView) findViewById(R.id.lapView);
 		setupCommentLongPress(startTimeView);
@@ -758,8 +754,10 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 	{
 		super.onResume();
 		addDebugLog("onResume; isStarted == " + clock.isStarted + ", wasStarted == " + clock.wasStarted);
-		if (! clock.isStarted)
+		updateHourVisibility();
+		if (! clock.isStarted) {
 			return;
+		}
 
 		clock.onAppResume();
 	}
@@ -806,14 +804,14 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
      */
 	private void updateModeMenuFromCurrent() {
 		switch (clock.getMode())
-	    	{
-    		case STOP_LAP:
-    			if(modeMenu_itemStop != null)
-    				modeMenu_itemStop.setChecked(true);  break;
-	    	case COUNTDOWN:
-	    		if(modeMenu_itemStop != null)
-	    			modeMenu_itemCountdown.setChecked(true);  break;
-	    	}
+		{
+		case STOP_LAP:
+			if(modeMenu_itemStop != null)
+				modeMenu_itemStop.setChecked(true);  break;
+		case COUNTDOWN:
+			if(modeMenu_itemStop != null)
+				modeMenu_itemCountdown.setChecked(true);  break;
+		}
 	}
     
     @Override
@@ -1058,7 +1056,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	addDebugLog("onActivityResult");
+		addDebugLog("onActivityResult");
     	readSettings(false); // because only settingsactivity is started for
     	// result, we can launch that without checking the parameters.
     }
@@ -1155,7 +1153,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 
 		if (! timeOnly)
 		{
-			final char da = DateFormat.DAY;
+			final char da = DateFormat.DAY;//TODO Obsolete DateFormat in newer APIs
 			fmt_dow_meddate.append(da);
 			fmt_dow_meddate.append(da);
 			fmt_dow_meddate.append(da);
@@ -1175,10 +1173,9 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 				}
 				else if (c == DateFormat.MONTH)
 					fmt_dow_meddate.append(c);
-				if (c != ymd_order[2])
-					fmt_dow_meddate.append(' ');
+
+				fmt_dow_meddate.append(' ');//don't add a space
 			}
-			fmt_dow_meddate.append(' ');
 		}
 
 		// now hh:mm:ss[ am/pm]
@@ -1211,11 +1208,11 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 	 * @param onlyIfZero  If true, set the clock to the input data only if the clock is currently 0:0:0:0.
 	 * @see #resetClockAndViews()
 	 */
-	private void clickRefreshCountdownTime(final boolean onlyIfZero)
+	private void refreshCountdownTime(final boolean onlyIfZero)
 	{
-		if(!clock.isStarted) {
-
-			if (onlyIfZero && 
+		if(!clock.isStarted)
+		{
+			if (onlyIfZero &&
 				((clock.hour != 0) || (clock.min != 0) || (clock.sec != 0) || (clock.dsec != 0)))
 			{
 				return;  // <---  Early return: Not 0:0:0:0 ---
@@ -1239,6 +1236,8 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 				startTimeView.setText("");
 			else
 				startTimeView.setText(comment);
+
+			updateHourVisibility();
 		}
 		else {
 			//Show error when currently counting
@@ -1255,12 +1254,14 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 	 * If isStarted, do nothing.
 	 * If wasStarted, call this only after the confirmation alert.
 	 *
-	 * @see #clickRefreshCountdownTime(boolean)
+	 * @see #refreshCountdownTime(boolean)
 	 */
 	private void resetClockAndViews()
 	{
 		if(clock.isStarted)
+		{
 			return;
+		}
 
 		final boolean anyLaps = (clock.laps > 1);
 		clock.reset(-1, 0, 0, 0);
@@ -1294,6 +1295,8 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 			dbHelper.deleteTemporaryLaps();
 		}
 
+		updateHourVisibility();
+
 		// Clear any old anstop_in_use flags from previous runs
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mContext);
 		if (settings.getBoolean("anstop_in_use", false)
@@ -1304,7 +1307,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 			outPref.putBoolean("anstop_in_use", false);
 			outPref.putBoolean("anstop_state_clockActive", false);
 			outPref.putBoolean("anstop_state_clockWasActive", false);
-			outPref.commit();
+			outPref.apply();
 		}
 	}
 
@@ -1369,7 +1372,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
     		// Refresh automatically.
     		if ((currentMode == COUNTDOWN) && (! clock.isStarted) && (! clock.wasStarted))
     		{
-    			clickRefreshCountdownTime(true);
+    			refreshCountdownTime(true);
     		}
 
     		// If starting to count in countdown mode, but the clock has 0:0:0,
@@ -1412,12 +1415,12 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
     }
     
     private class resetButtonListener implements OnClickListener {
-    	
+
     	public void onClick(View v) {
-    		
-    		if(!clock.isStarted) {
-    			if (!clock.wasStarted) {
-    				resetClockAndViews();
+
+			if(!clock.isStarted) {
+				if (!clock.wasStarted) {
+					resetClockAndViews();
     			} else {
     				AlertDialog.Builder alert = new AlertDialog.Builder(Anstop.this);
     				alert.setTitle(R.string.confirm);
@@ -1448,7 +1451,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
     	
     	public void onClick(View v) {
     		if(clock.isStarted || !clock.wasStarted) {
-    			clickRefreshCountdownTime(false);
+    			refreshCountdownTime(false);
     		} else {
     			AlertDialog.Builder alert = new AlertDialog.Builder(Anstop.this);
     			alert.setTitle(R.string.confirm);
@@ -1456,7 +1459,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 
     			alert.setPositiveButton(R.string.refresh, new DialogInterface.OnClickListener() {
     				public void onClick(DialogInterface dialog, int whichButton) {
-    					clickRefreshCountdownTime(false);
+    					refreshCountdownTime(false);
     				}
     			});
 
