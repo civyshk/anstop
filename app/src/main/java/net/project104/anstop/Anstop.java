@@ -26,6 +26,7 @@
 package net.project104.anstop;
 
 import java.util.List;
+import java.util.TreeSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -83,8 +84,6 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 	/**
 	 * These modes define the clock functioning and layout.
 	 * Currently: STOP_LAP (stopwatch and lap logging) & COUNTDOWN
-	 * Indices need to be sequential from 0 to n-1, other code
-	 * like {@link #onGesturePerformed} relies on this
 	 */
 	public enum Mode{
 		STOP_LAP(0), COUNTDOWN(1);
@@ -101,8 +100,30 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 			}
 		}
 
+		public Mode next(){
+			Integer nextKey = keys.higher(asInt);
+			if(nextKey == null){
+				nextKey = keys.first();
+			}
+			return Mode.get(nextKey);
+		}
+
+		public Mode prev(){
+			Integer nextKey = keys.lower(asInt);
+			if(nextKey == null){
+				nextKey = keys.last();
+			}
+			return Mode.get(nextKey);
+		}
+
 		public final int asInt;
 		public static final int SIZE = Mode.values().length;
+		public static final TreeSet<Integer> keys = new TreeSet<>();
+		static {
+			for(Mode m : Mode.values()) {
+				keys.add(m.asInt);
+			}
+		}
 	}
 
 	/**
@@ -1373,7 +1394,8 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 	}
 
     private class startButtonListener implements OnClickListener {
-    	
+
+		@Override
     	public void onClick(View v) {
     		final Mode currentMode = clock.getMode();
     		
@@ -1426,6 +1448,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
     
     private class resetButtonListener implements OnClickListener {
 
+		@Override
     	public void onClick(View v) {
 
 			if(!clock.isStarted) {
@@ -1458,7 +1481,8 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
     }
     
     private class refreshButtonListener implements OnClickListener {
-    	
+
+		@Override
     	public void onClick(View v) {
     		if(clock.isStarted || !clock.wasStarted) {
     			refreshCountdownTime(false);
@@ -1492,6 +1516,7 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
     	 * {@link Clock#lap(StringBuilder)},
     	 * append it to {@link #laps} and {@link #lapView}.
     	 */
+    	@Override
     	public void onClick(View v) {
 			final boolean wasStarted = clock.wasStarted;  // get asInt before clock.lap()
 
@@ -1549,20 +1574,12 @@ public class Anstop extends Activity implements OnGesturePerformedListener {
 		List<Prediction> predictions = gestureLibrary.recognize(gesture);
 	    for(Prediction prediction : predictions) {
 	    	if(prediction.score > 1.0) {
-				final int cprev = clock.getMode().asInt;
+				final Mode cprev = clock.getMode();
 				if(prediction.name.equals("SwipeRight")) {
-					int newMode = cprev + 1;
-					if(newMode == Mode.SIZE) {
-						newMode = 0;
-					}
-					changeModeOrPopupConfirm(false, Mode.get(cprev), Mode.get(newMode));
+					changeModeOrPopupConfirm(false, cprev, cprev.next());
 	    		}
 	    		else if(prediction.name.equals("SwipeLeft")) {
-					int newMode = cprev - 1;
-					if(newMode < 0) {
-						newMode = Mode.SIZE - 1;
-					}
-					changeModeOrPopupConfirm(true, Mode.get(cprev), Mode.get(newMode));
+					changeModeOrPopupConfirm(true, cprev, cprev.prev());
 	    		}
 	    	}
 	    }
