@@ -36,10 +36,13 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.view.View;  // only for hourhandler to hide/show hours views if needed
 
+import net.project104.anstop.Anstop.Mode;
+
+
 /**
  * Timer object and thread.
  *<P>
- * Has two modes ({@link Anstop#STOP_LAP} and {@link Anstop#COUNTDOWN}); clock's mode field is {@link #v}.
+ * Has two modes ({@link Anstop.Mode#STOP_LAP} and {@link Anstop.Mode#COUNTDOWN}); clock's mode field is {@link #v}.
  * Has accessible fields for the current {@link #hour}, {@link #min}, {@link #sec}, {@link #dsec}.
  * Has a link to the {@link #parent} Anstop, and will sometimes read or set parent's text field contents.
  *<P>
@@ -59,13 +62,13 @@ import android.view.View;  // only for hourhandler to hide/show hours views if n
  *        can start it to continue counting.
  *</UL>
  * You can examine the current state by reading {@link #isStarted} and {@link #wasStarted}.
- * To reset the clock again, and/or change the mode, call {@link #reset(int, int, int, int)}.
+ * To reset the clock again, and/or change the mode, call {@link #reset(Mode, int, int, int)}.
  *<P>
  * When running, a thread either counts up ({@link #threadS}) or down ({@link #threadC}),
  * firing every 100ms.  The {@link #parent}'s hour:minute:second.dsec displays are updated
  * through {@link #hourh} and the rest of the handlers here.
  *<P>
- * To lap, call {@link #lap(StringBuffer)}.  Note that persisting the lap data arrays
+ * To lap, call {@link #lap(StringBuilder)}.  Note that persisting the lap data arrays
  * at Activity.onStop must be done in {@link Anstop}, not here.
  * {@link #fillSaveState(Bundle)} stores the lap data arrays, but there's no corresponding
  * method to save long arrays to {@link SharedPreferences}.
@@ -76,7 +79,7 @@ import android.view.View;  // only for hourhandler to hide/show hours views if n
 public class Clock {
 
 	/**
-	 * Hour field format: Hide hours if 0 (default value).
+	 * Hour field format: Hide hours if 0 (default asInt).
 	 * Current setting is in {@link LapFormatter#hourFormat}.
 	 * @since 1.6
 	 */
@@ -113,14 +116,14 @@ public class Clock {
 	/**
 	 * Counting mode. Two possibilities:
 	 *<UL>
-	 *<LI> {@link Anstop#STOP_LAP} (0), counting up from 0
-	 *<LI> {@link Anstop#COUNTDOWN} (1), counting down from a time set by the user
+	 *<LI> {@link Anstop.Mode#STOP_LAP} counting up from 0
+	 *<LI> {@link Anstop.Mode#COUNTDOWN} counting down from a time set by the user
 	 *</UL>
 	 * @see #getMode()
-	 * @see #changeMode(int)
-	 * @see #reset(int, int, int, int)
+	 * @see #changeMode(Mode)
+	 * @see #reset(Mode, int, int, int)
 	 */
-	private int v;
+	private Anstop.Mode v;
 
 	/**
 	 * Hour and Lap formatting flags and fields.
@@ -137,7 +140,7 @@ public class Clock {
 	/** has the clock ran since its last reset? This is not an 'isPaused' flag, because
 	 *  it's set true when the counting begins and {@link #isStarted} is set true.
 	 *<P>
-	 *  <tt>wasStarted</tt> is set true by {@link #count()}, and false by {@link #reset(int, int, int, int)}.
+	 *  <tt>wasStarted</tt> is set true by {@link #count()}, and false by {@link #reset(Mode, int, int, int)}.
 	 */
 	public boolean wasStarted = false;
 
@@ -203,7 +206,7 @@ public class Clock {
 	
 	/**
 	 * For countdown mode, the initial seconds, minutes, hours,
-	 * as set by {@link #reset(int, int, int, int)},
+	 * as set by {@link #reset(Mode, int, int, int)},
 	 * stored as a total number of seconds.
 	 * Used by {@link #adjClockOnAppResume(boolean, long)}.
 	 */
@@ -296,7 +299,7 @@ public class Clock {
 		// be sure to add it in both copies of
 		// fillSaveState and of restoreFromSaveState.
 
-		outState.putInt("clockAnstopCurrent", v);
+		outState.putInt("clockAnstopCurrent", v.asInt);
 		outState.putBoolean("clockAnstopWroteStart", parent.wroteStartTime);
 		int[] hmsd = new int[]{ hour, min, sec, dsec };
 		outState.putIntArray("clockDigits", hmsd);
@@ -341,7 +344,7 @@ public class Clock {
 	 * the key names have "anstop_state_" as a prefix.
 	 *<P>
 	 * Always sets long {@code "anstop_state_clockStateSaveTime"} to {@link System#currentTimeMillis()}
-	 * and sets boolean {@code "anstop_in_use"} to the value returned by {@link #isInUse()}.
+	 * and sets boolean {@code "anstop_in_use"} to the asInt returned by {@link #isInUse()}.
 	 *
 	 * @param outState SharedPreferences to save into
 	 * @return true if clock was running, false otherwise
@@ -368,7 +371,7 @@ public class Clock {
 			// be sure to add it in both copies of
 			// fillSaveState and of restoreFromSaveState.
 
-			outPref.putInt("anstop_state_current", v);
+			outPref.putInt("anstop_state_current", v.asInt);
 			outPref.putBoolean("anstop_state_wroteStart", parent.wroteStartTime);
 			outPref.putInt("anstop_state_clockDigits_h", hour);
 			outPref.putInt("anstop_state_clockDigits_m", min);
@@ -404,7 +407,7 @@ public class Clock {
 				outPref.putInt("anstop_state_clockCountSec", 0);
 			}
 		}
-		outPref.commit();
+		outPref.apply();
 
 		return isStarted;
 	}
@@ -443,7 +446,7 @@ public class Clock {
 		if (appPauseTime > appStateRestoreTime)
 			adjClockOnAppResume(false, System.currentTimeMillis());
 
-		if(v == Anstop.STOP_LAP) {
+		if(v == Mode.STOP_LAP) {
 			if((threadS != null) && threadS.isAlive())
 				threadS.interrupt();
 			threadS = new clockThread();
@@ -464,7 +467,7 @@ public class Clock {
 	 * Must call AFTER the GUI elements (parent.dsecondsView, etc) exist.
 	 * Thus you must read <tt>clockAnstopCurrent</tt> from the bundle yourself,
 	 * and set the GUI mode accordingly, before calling this method.
-	 * Once the GUI is set, call {@link #changeMode(int)} to reset clock fields
+	 * Once the GUI is set, call {@link #changeMode(Mode)} to reset clock fields
 	 * and then call this method.
 	 *<P>
 	 * Will call count() if clockStarted == 1 in the bundle, unless we've counted down to 0:0:0.
@@ -482,7 +485,8 @@ public class Clock {
 
 		// set v to ensure consistent state; should be set already
 		// by changeMode before this method was called.
-		v = inState.getInt("clockAnstopCurrent");
+		int mode = inState.getInt("clockAnstopCurrent");
+		v = Anstop.Mode.get(mode);
 
 		// read the counting fields
 		{
@@ -577,7 +581,7 @@ public class Clock {
 	 * Must call AFTER the GUI elements (parent.dsecondsView, etc) exist.
 	 * Thus you must read <tt>"anstop_state_current"</tt> from the preferences yourself,
 	 * and set the GUI mode accordingly, before calling this method.
-	 * Once the GUI is set, call {@link #changeMode(int)} to reset clock fields
+	 * Once the GUI is set, call {@link #changeMode(Mode)} to reset clock fields
 	 * and then call this method.
 	 *<P>
 	 * Will call count() if <tt>anstop_state_clockStarted</tt> == 1 in the preferences,
@@ -601,7 +605,8 @@ public class Clock {
 
 		// set v to ensure consistent state; should be set already
 		// by changeMode before this method was called.
-		v = inState.getInt("anstop_state_current", Anstop.STOP_LAP);
+		int mode = inState.getInt("anstop_state_current", Mode.STOP_LAP.asInt);
+		v = Mode.get(mode);
 
 		// read the counting fields
 		{
@@ -710,11 +715,12 @@ public class Clock {
 			// based on our mode, adjust dsec, sec, min, hour:
 			switch (v)
 			{
-			case Anstop.STOP_LAP:
+			case STOP_LAP:
 				ttotal = resumedAtTime - startTimeAdj;
 				break;
 	
-			default:  // Anstop.COUNTDOWN
+			case COUNTDOWN:
+			default:
 				ttotal = (countdnTotalSeconds * 1000L)
 				    - (resumedAtTime - startTimeAdj);
 				if (ttotal < 0)
@@ -747,7 +753,7 @@ public class Clock {
 	}
 
 	/**
-	 * Get the current value of this timer.
+	 * Get the current asInt of this timer.
 	 * @return a stringbuffer of the form "#h mm:ss:d"
 	 * @since 1.3
 	 * @see #getCurrentValueMillis(StringBuilder, boolean)
@@ -769,9 +775,9 @@ public class Clock {
 	}
 
 	/**
-	 * Get the current value of this timer, in milliseconds.
+	 * Get the current asInt of this timer, in milliseconds.
 	 * @param sb  Optional StringBuffer, or null;
-	 *    current value in the format "#h mm:ss:d" will be appended to sb
+	 *    current asInt in the format "#h mm:ss:d" will be appended to sb
 	 *    depending on {@link LapFormatter#lapFormatFlags}.
 	 *    if {@link LapFormatter#lapFormatFlags} includes {@link #LAP_FMT_FLAG_DELTA},
 	 *    and {@link #laps} &gt; 1, then {@link #lap_elapsed}[{@link #laps} - 2]
@@ -833,11 +839,11 @@ public class Clock {
 
 	/**
 	 * Get the clock's current counting mode.
-	 * @return  the mode; {@link Anstop#STOP_LAP} or {@link Anstop#COUNTDOWN}
-	 * @see #changeMode(int)
-	 * @see #reset(int, int, int, int)
+	 * @return  the mode; {@link Mode#STOP_LAP} or {@link Mode#COUNTDOWN}
+	 * @see #changeMode(Mode)
+	 * @see #reset(Mode, int, int, int)
 	 */
-	public int getMode() { return v; }
+	public Anstop.Mode getMode() { return v; }
 
 	/**
 	 * Set the clock's {@link LapFormatter#hourFormat}, adjusting {@link #hour} and
@@ -948,22 +954,22 @@ public class Clock {
 
 	/**
 	 * Reset the clock while stopped, and maybe change modes.  {@link #isStarted} must be false.
-	 * If <tt>newMode</tt> is {@link Anstop#STOP_LAP}, the clock will be reset to 0,
+	 * If <tt>newMode</tt> is {@link Mode#STOP_LAP}, the clock will be reset to 0,
 	 * and <tt>h</tt>, <tt>m</tt>, <tt>s</tt> are ignored.
 	 *
-	 * @param newMode  new mode to set, or -1 to leave as is
+	 * @param newMode  new mode to set, or null to leave as is
 	 * @param h  for countdown mode, hour to reset the clock to
 	 * @param m  minute to reset the clock to
 	 * @param s  second to reset the clock to
 	 * @return true if was reset, false if was not reset because {@link #isStarted} is true.
-	 * @see #changeMode(int)
+	 * @see #changeMode(Mode)
 	 */
-	public boolean reset(final int newMode, final int h, int m, final int s)
+	public boolean reset(final Mode newMode, final int h, int m, final int s)
 	{
 		if (isStarted)
 			return false;
 
-		if (newMode != -1)
+		if (newMode != null)
 			v = newMode;
 
 		wasStarted = false;
@@ -974,7 +980,7 @@ public class Clock {
 		startTimeAdj = -1L;
 
 		laps = 1;
-		if (v == Anstop.STOP_LAP)
+		if (v == Mode.STOP_LAP)
 		{
 			hour = 0;
 			min = 0;
@@ -1000,10 +1006,10 @@ public class Clock {
 	 *<P>
 	 * If the current mode is already <tt>newMode</tt>, change it anyway;
 	 * calls <tt>reset</tt> to update all fields.
-	 * @see #reset(int, int, int, int)
-	 * @param newMode  The new mode; {@link Anstop#STOP_LAP} or {@link Anstop#COUNTDOWN}
+	 * @see #reset(Mode, int, int, int)
+	 * @param newMode  The new mode; {@link Mode#STOP_LAP} or {@link Mode#COUNTDOWN}
 	 */
-	public void changeMode(final int newMode)
+	public void changeMode(final Mode newMode)
 	{
 		reset(newMode, 0, 0, 0);
 	}
@@ -1011,7 +1017,7 @@ public class Clock {
 	/**
 	 * Start or stop(pause) counting.
 	 *<P>
-	 * For <tt>COUNTDOWN</tt> mode, you must first call {@link #reset(int, int, int, int)}
+	 * For <tt>COUNTDOWN</tt> mode, you must first call {@link #reset(Mode, int, int, int)}
 	 * or set the {@link #hour}, {@link #min}, {@link #sec} fields.
 	 *<P>
 	 * If <tt>wasStarted</tt>, and if <tt>stopTime</tt> != -1,
@@ -1038,7 +1044,7 @@ public class Clock {
 
 			isStarted = true;
 			wasStarted = true;
-			if(v == Anstop.STOP_LAP) {
+			if(v == Mode.STOP_LAP) {
 				if((threadS != null) && threadS.isAlive())
 					threadS.interrupt();
 				threadS = new clockThread();
@@ -1064,7 +1070,7 @@ public class Clock {
 			isStarted = false;
 			stopTime = now;
 			
-			if(v == Anstop.STOP_LAP) {
+			if(v == Mode.STOP_LAP) {
 				if(threadS.isAlive())
 					threadS.interrupt();
 			}
@@ -1129,7 +1135,7 @@ public class Clock {
 	
 	/**
 	 * Countdown mode, count down to 0.
-	 * Before starting this thread, set non-zero h:m:s.d by calling {@link Clock#reset(int, int, int, int)}.
+	 * Before starting this thread, set non-zero h:m:s.d by calling {@link Clock#reset(Mode, int, int, int)}.
 	 * Otherwise the thread immediately stops at 00:00:00.0.
 	 * @see clockThread
 	 */
@@ -1185,20 +1191,13 @@ public class Clock {
 		@Override
 		public void run() {
 			
-			
 			if(hour == 0 && min == 0 && sec == 0 && dsec == 0) {
 				cleanupAt0();
-
 				return;
 			}
 			
 			while(true) {
-				
-
-				
 				if(dsec == 0) {
-						
-					
 					if(sec == 0) {
 						if(min == 0) {
 							if(hour != 0) {
@@ -1206,7 +1205,6 @@ public class Clock {
 								min = 60;
 								hourh.sendEmptyMessage(MAX_PRIORITY);
 								minh.sendEmptyMessage(MAX_PRIORITY);
-								
 							}
 						}
 						
@@ -1215,20 +1213,16 @@ public class Clock {
 							sec = 60;
 							minh.sendEmptyMessage(MAX_PRIORITY);
 						}
-						
-					}					
+					}
 					
 					if(sec != 0) {
 						sec--;
 						dsec = 10;
 						sech.sendEmptyMessage(MAX_PRIORITY);
 					}
-										
 				}
 				dsec--;
-				
-				
-				
+
 				dsech.sendEmptyMessage(MAX_PRIORITY);
 				
 				try {
@@ -1237,19 +1231,13 @@ public class Clock {
 				catch ( InterruptedException e) {
 					return;
 				}
-				
-				
+
 				if(hour == 0 && min == 0 && sec == 0 && dsec == 0) {
 					cleanupAt0();
-
 					return;
 				}
-					
 			}
-			
-			
 		}
-		
 	}
 	
 	private class dsechandler extends Handler {
