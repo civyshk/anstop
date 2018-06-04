@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
 
+import net.project104.anstop.Anstop.Mode;
 
 public class AnstopDbAdapter {
 
@@ -231,7 +232,7 @@ public class AnstopDbAdapter {
      * If there are laps, add them afterwards by calling {@link #createNewLaps(long, int, long[], long[])}.
      * @param title  Title
      * @param comment   Comment, or null. In v2 this body text also included the start time and laps.
-     * @param mode   Stopwatch mode used: {@link Anstop#STOP_LAP} or {@link Anstop#COUNTDOWN}
+     * @param mode   Stopwatch mode used: {@link Mode#STOP_LAP} or {@link Mode#COUNTDOWN}
      * @param startTime  Start time (milliseconds), or -1L if never started.
      *    This same convention is returned by {@link Clock#getStartTimeActual()}.
      * @param stopTime   Stop time (milliseconds), or -1L for none
@@ -241,7 +242,7 @@ public class AnstopDbAdapter {
      */
     public long createNew
     	(final String title, final String comment,
-		 final int mode, final long startTime, final long stopTime, final long elapsed)
+		 final Anstop.Mode mode, final long startTime, final long stopTime, final long elapsed)
     {
     	ContentValues cl = new ContentValues();
     	cl.put(KEY_TITLE, title);
@@ -249,7 +250,7 @@ public class AnstopDbAdapter {
     		cl.put(KEY_BODY, comment);
     	else
     		cl.put(KEY_BODY, "");
-    	cl.put(FIELD_TIMES_MODE, mode);
+    	cl.put(FIELD_TIMES_MODE, mode.asInt);
     	if (startTime != -1L)
     		cl.put(FIELD_TIMES_START_SYSTIME, startTime);
     	if (stopTime != -1L)
@@ -355,7 +356,7 @@ public class AnstopDbAdapter {
 				// mode
 				sb.append(mContext.getResources().getString(R.string.mode_was));
 				sb.append(' ');
-				if (Anstop.COUNTDOWN == time.getInt(col_mode))
+				if (Anstop.Mode.COUNTDOWN == Anstop.Mode.get(time.getInt(col_mode)))
 					sb.append(mContext.getResources().getString(R.string.countdown));
 				else
 					sb.append(mContext.getResources().getString(R.string.stop));
@@ -426,7 +427,7 @@ public class AnstopDbAdapter {
 
     /**
      * Insert the {@link #TABLE_LAPS} entries for all the active laps.
-     * @param times_id  Row ID from {@link #createNew(String, String, int, long, long, long)}
+     * @param times_id  Row ID from {@link #createNew(String, String, Mode, long, long, long)}
      * @param laps  Number of laps to use from the arrays; {@link Clock#laps} - 1
      *     since that field is the <em>next</em> lap number
      * @param elapsed  Per-lap elapsed-time array, like {@link Clock#lap_elapsed}
@@ -446,7 +447,7 @@ public class AnstopDbAdapter {
 
     /**
      * Insert a new {@link #TABLE_LAPS} entry for a new lap.
-     * @param times_id  Row ID from {@link #createNew(String, String, int, long, long, long)},
+     * @param times_id  Row ID from {@link #createNew(String, String, Mode, long, long, long)},
      *    or 0 for temporary lap storage for the currently active timing.
      * @param elapsed  Per-lap elapsed-time
      * @param systime  Per-lap system-time
